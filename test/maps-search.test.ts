@@ -1,40 +1,51 @@
-import { config } from 'dotenv'
-import { describe } from '@jest/globals'
-import { getPlaceAutocomplete } from '../src/maps-api'
-import { getAutoCompleteDetails } from '../src'
+import { config } from "dotenv";
+import { describe } from "@jest/globals";
+import { getPlaceAutoComplete } from "../src/maps-api";
+import { getAutoCompleteDetails } from "../src";
 
 config();
 
 // These are end-to-end tests and need an api key
-describe('Tomtom Places E2E Tests', () => {
-    describe('getAutoCompleteDetails', () => {
-        it ('returns a promise', () => {
-            const res = getAutoCompleteDetails('Charlotte Street')
-            expect(res).toBeInstanceOf(Promise)
-        })
+describe("Tomtom Places E2E Tests", () => {
+	const apiKey = process.env.TOMTOM_API_KEY!;
 
-        it('can fetch from the autocomplete api', async () => {
-            const res = await getAutoCompleteDetails('Charlotte Street')
-            const firstRes = res[0];
-            expect(firstRes).toHaveProperty('placeId')
-            expect(firstRes).toHaveProperty('streetNumber')
-            expect(firstRes).toHaveProperty('countryCode')
-            expect(firstRes).toHaveProperty('country')
-            expect(firstRes).toHaveProperty('freeformAddress')
-            expect(firstRes).toHaveProperty('municipality')
-        })
-    })
+	describe("getAutoCompleteDetails", () => {
+		it("returns a promise", async () => {
+			const res = getAutoCompleteDetails("Charlotte Street");
+			expect(res).toBeInstanceOf(Promise);
+			await res; // tell jest to wait for the response so it can handle any errors
+		});
 
-    describe('getPlaceAutocomplete', () => {
+		it("can fetch from the autocomplete api", async () => {
+			const res = await getAutoCompleteDetails("Charlotte Street");
+			const firstRes = res[0];
+			expect(firstRes).toHaveProperty("placeId");
+			expect(firstRes).toHaveProperty("streetNumber");
+			expect(firstRes).toHaveProperty("countryCode");
+			expect(firstRes).toHaveProperty("country");
+			expect(firstRes).toHaveProperty("freeformAddress");
+			expect(firstRes).toHaveProperty("municipality");
+		});
 
-        it('handles no results', async () => {
-            const res = await getPlaceAutocomplete(process.env.TOMTOM_API_KEY, 'asfasffasfasafsafs');
-            expect(res).toStrictEqual([])
-        })
+		it("only fetches australian addresses", async () => {
+			const res = await getAutoCompleteDetails("Charlotte Street");
+			res.forEach((result) => {
+				expect(result.countryCode).toBe("AU");
+			});
+		});
+	});
 
-        it('handles error', async () => {
-            expect(getPlaceAutocomplete(process.env.TOMTOM_API_KEY, '')).rejects.toThrow()
-        })
-    })
+	describe("getPlaceAutoComplete", () => {
+		it("handles no results", async () => {
+			const res = await getPlaceAutoComplete(
+				apiKey,
+				"asfasffasfasafsafs"
+			);
+			expect(res).toStrictEqual([]);
+		});
 
-})
+		it("handles error", async () => {
+			expect(getPlaceAutoComplete(apiKey, "")).rejects.toThrow();
+		});
+	});
+});

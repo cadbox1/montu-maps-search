@@ -19,14 +19,20 @@ Resources:
 Place Search Documentation: https://developer.tomtom.com/search-api/documentation/search-service/search-service
 API Key: Oyb0npJAVdRwDauqpFez7zKCy2euUYql
 
+Setup Environment Variables
+========
+1. Make a copy of `.env.example` and name it `.env`.
+1. Create a [TomTom account](https://developer.tomtom.com/).
+1. Copy your api key into `.env`.
+
 Install:
 ========
-1. yarn install
+1. npm install
 
 Test:
 =====
-1. yarn install
-2. yarn test
+1. npm install
+1. npm run test
 
 
 Requirements:
