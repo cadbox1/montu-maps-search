@@ -27,12 +27,12 @@ Setup Environment Variables
 
 Install:
 ========
-1. npm install
+1. `npm install`
 
 Test:
 =====
-1. npm install
-1. npm run test
+1. `npm install`
+1. `npm run test`
 
 
 Requirements:
